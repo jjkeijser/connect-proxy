@@ -1,0 +1,198 @@
+.TH "CONNECT-PROXY" "1" 
+.SH "NAME" 
+connect-proxy \(em connect over SOCKS4/5, HTTP or HTTPS proxy 
+.SH "SYNOPSIS" 
+.PP 
+\fBconnect-proxy\fR [\fB-dnhsxt45\fP]  [\fB-R \fIresolve\fR \fP]  [\fB-p \fIlocal-port\fR \fP]  [\fB-w \fIsecs\fR \fP]  [\fB-H \fI[user@]proxy-server[:port]]\fR \fP]  [\fB-S \fI[user@]socks-server[:port]]\fR \fP]  [\fB-a \fIsocks-auth-method\fR \fP]  [\fB-T \fIproxy-server[:port]\fR \fP]  [\fB-c \fItelnet-proxy-command\fR \fP]  [\fB-X \fI[user@]proxy-server:[port]]\fR \fP]  [host]  [port]  
+.SH "DESCRIPTION" 
+.PP 
+\fBconnect-proxy\fR opens a connection to a remote host over SOCKS4/5, HTTP or HTTPS proxies.
+.PP 
+Please, note that any HTTP-Proxy tunnel won't work with content-inspection firewall (unless using SSL). 
+.SH "OPTIONS" 
+.TP
+\fB\-\-help
+Show options.
+.\"*********************************************************
+.TP
+\fB\-H [user@]proxy-server[:port] \fRor\fB \-\-http-proxy-server [user@]proxy-server[:port]
+specifies a hostname and port number of the HTTP proxy server to relay. 
+If the port is omitted, 80 is used. You can specify this value in the environment variable 
+HTTP_PROXY and pass the \-h option to use it. 
+If the user is omitted, the current userid is used. You can specify this value in the environment variable 
+HTTP_PROXY_USER.  Simple HTTP Basic-Auth is supported.
+.TP
+.\"*********************************************************
+\fB\-S [user@]proxy-server[:port] \fRor\fB \-\-socks-proxy-server [user@]proxy-server[:port]
+specifies the hostname and port number of the SOCKS server to relay.
+Like \-H, the port number can be omitted and the default is 1080. 
+You can also specify this value pair in the environment 
+variable SOCKS_SERVER or SOCKS5_SERVER and give the \-s option to use it. 
+If the user is omitted, the current userid is used. You can specify this value in the environment variable 
+SOCKS_USER or SOCKS5_USER.
+.\"*********************************************************
+.TP
+\fB\-T proxy-server[:port] \fRor\fB \-\-telnet-server proxy-server[:port]
+(EXPERIMENTAL) specifies a hostname and port number of the Telnet proxy server to relay. 
+If the port is omitted, 22 is used. You can specify this value in the environment variable 
+TELNET_PROXY and pass the \-t option to use it. 
+.\"*********************************************************
+.TP
+\fB\-X [user@]proxy-server[:port] \fRor\fB \-\-https-proxy-server [user@]proxy-server[:port]
+specifies a hostname and port number of the HTTPS proxy server to relay. 
+If the port is omitted, 443 is used. You can specify this value in the environment variable 
+HTTPS_PROXY and pass the \-x option to use it. 
+If the user is omitted, the current userid is used. You can specify this value in the environment variable 
+HTTPS_PROXY_USER.  Simple HTTPS Basic-Auth as well as client-side certificate authentication is supported.
+If a password is required for remote authentiation, either a simple terminal prompt or the $SSH_ASKPASS
+program will be used to query the user for the password.
+.\"*********************************************************
+.TP
+\fB\-\-https-proxy-ca  CA-cert-file.pem
+specifies a PEM-formatted file containing the Certificate Authorities (CA\'s) to trust when connecting 
+to an HTTPS proxy server.
+.\"*********************************************************
+.TP
+\fB\-\-https-proxy-ca-path  CA-dir-path
+specifies a directory containing hashed PEM-formatted public certificate files of the Certificate 
+Authorities (CA\'s) to trust when connecting to an HTTPS proxy server.
+.\"*********************************************************
+.TP
+\fB \-\-https-proxy-certname  name
+specifies the name of the HTTPS proxy server certificate (/CN=...) if this name is different from
+the remote hostname of the HTTPS proxy server itself.
+.\"*********************************************************
+.TP
+\fB--no-check-certificate
+disable the verification of the HTTPS proxy server certificate and hostname.
+.\"*********************************************************
+.TP
+\fB\-\-https-user-cert certfile.pem
+specifies a PEM-formatted file containing the user (client-side) certificate. Use this, together
+with the \'--http-user-key\' option to perform client-side certificate authentication when
+connecting to an HTTPS proxy server.
+.\"*********************************************************
+.TP
+\fB\-\-https-user-key keyfile.pem
+specifies a PEM-formatted file containing the user (client-side) private key. Use this, together
+with the \'--http-user-cert\' option to perform client-side certificate authentication when
+connecting to an HTTPS proxy server.
+If the private key is protected using a passphrase, either a simple terminal prompt or the $SSH_ASKPASS
+program will be used to query the user for the passphrase.
+.\"*********************************************************
+.TP
+\fB-4
+specifies SOCKS relaying and indicates protocol version to use.  
+It is valid only when used with '\-s' or '\-S'.  
+Default is '\-5' (protocol version 5).
+.\"*********************************************************
+.TP
+\fB-a socks5-auth-method
+(EXPERIMENTAL) specifies the authentication method when connecting to a SOCKS5 server.
+The keywords "none", "gssapi", "userpass" and "chap" are acceptable. 
+You can specify this value in the environment variable SOCKS5_AUTH.
+.\"*********************************************************
+.TP
+\fB-c telnet-command
+(EXPERIMENTAL) specifies the \'telnet\' command to use when connecting to a Telnet proxy server.
+.\"*********************************************************
+.TP
+\fB-R
+specifies the method to resolve the hostname when connecting to a SOCKS server.
+Three keywords ("local", "remote", "both") or dot-notation IP address are acceptable. 
+The keyword "both" means, "Try local first, then remote".
+If a dot-notation IP address is specified, use this host as nameserver. The default is "remote" for SOCKS5 or 
+"local" for SOCKS4. 
+On SOCKS4 protocol, remote resolving method ("remote" and "both") requires protocol 4a supported server. 
+You can specify this value in the environment variable SOCKS_RESOLVE or SOCKS5_RESOLVE.
+.\"*********************************************************
+.TP
+\fB-p local-port
+will forward a local TCP port instead of using the standard input and output. 
+.\"*********************************************************
+.TP
+\fB-P local-port
+same to '\-p' except keep remote session. The program repeats waiting the port with holding 
+remote session without disconnecting. To connect the remote session, send EOF to stdin or 
+kill the program. 
+.\"*********************************************************
+.TP
+\fB-w secs
+timeout in seconds for making connection with TARGET host. 
+.\"*********************************************************
+.TP
+\fB-d
+used for debug. If you fail to connect, use this and check request to and response from server. 
+
+.SH "USAGE" 
+.PP 
+To use proxy, this example is for SOCKS5 connection to connect to 
+\host\' at port 25 via SOCKS5 server on \'firewall\' host. 
+ 
+\fBconnect-proxy \-S firewall host 25\fR  
+ 
+\fBSOCKS5_SERVER=firewall; export SOCKS5_SERVER;  
+connect-proxy \-s host 25\fR 
+.PP 
+For a HTTP-PROXY connection: 
+ 
+\fBconnect-proxy \-H proxy-server:8080  host 25\fR   
+ 
+\fBHTTP_PROXY=proxy-server:8080; export HTTP_PROXY;  
+connect-proxy \-h host 25\fR  
+.PP 
+To forward a local port, for example to use ssh: 
+ 
+\fBconnect-proxy \-H proxy-server:8080  host 22 \fR  
+\fBssh \-l user \-p 5550 localhost\fR 
+.PP 
+For an HTTPS PROXY connection: 
+ 
+\fBconnect-proxy \-X proxy-server:443  host 25\fR   
+ 
+\fBHTTPS_PROXY=proxy-server:443; export HTTPS_PROXY;  
+connect-proxy \-x host 25\fR  
+.PP 
+For an HTTPS PROXY connection with client-side certificate authentication:
+ 
+\fBconnect-proxy \-X proxy-server:8443 --https-user-cert ~/.config/usercert.pem
+--https-user-key ~/.config/userkey.pem  host 25\fR   
+ 
+.PP 
+To use it along ssh transparently: 
+\fB # file://~/.ssh/config 
+Host * 
+ProxyCommand connect-proxy \-H proxy-server:8080  %h %p\fR 
+.SH "ENVIRONMENT" 
+.PP 
+LOGNAME, USER, SSH_ASKPASS,
+.TP
+SOCKS_PROXY, SOCKS_USER, SOCKS_RESOLVE,
+.TP
+SOCKS5_PROXY, SOCKS5_USER, SOCKS5_RESOLVE, SOCKS5_AUTH,
+.TP
+HTTP_PROXY, HTTP_PROXY_USER, HTTPS_PROXY, HTTPS_PROXY_USER,
+.TP
+HTTPS_PROXY_CERTNAME, HTTPS_PROXY_CA_FILE, HTTPS_PROXY_CA_PATH,
+HTTPS_PROXY_USERCERT, HTTPS_PROXY_USERKEY
+
+.SH "SEE ALSO" 
+.PP 
+ssh (1). 
+.SH "WWW" 
+.PP 
+https://github.com/jjkeijser/connect-proxy
+.PP 
+http://www.taiyo.co.jp/~gotoh/ssh/connect.html 
+.SH "COPYRIGHT"
+.PP 
+Permission is granted to copy, distribute and/or modify this document under 
+the terms of the GNU General Public License, Version 2 any  
+later version published by the Free Software Foundation. 
+.SH "AUTHOR" 
+.PP 
+This manual page was adapted by Jan Just Keijser jan.just.keijser@gmail.com 
+from the \fBDebian\fP manual page, written by Philippe COVAL Philippe.COVAL@laposte.net.
+.PP
+HTTPS support and the \'long\' format options were added by Jan Just Keijser
+jan.just.keijser@gmail.com.

@@ -296,6 +296,8 @@ static char *usage2 =
 "    [--http-proxy            [user@]proxy-server[:port]]\n"
 "    [--telnet-proxy          proxy-server[:port]\n"
 "    [--https-proxy           [user@]proxy-server[:port]]\n"
+"    [--https-proxy-ca        PEM format file of CA's]\n"
+"    [--https-proxy-ca-path   PEM format directory of CA's]\n"
 "    [--https-proxy-certname  name]\n"
 "    [--https-user-cert       certfile.pem]\n"
 "    [--https-user-key        keyfile.pem]\n"
@@ -305,7 +307,7 @@ static char *usage2 =
 /* name of this program */
 char *progname = NULL;
 static char *progdesc = "connect --- simple relaying command via proxy.";
-static char *revstr = "2.0";
+static char *revstr = "2.01";
 
 /* set of character for strspn() */
 const char *digits    = "0123456789";
