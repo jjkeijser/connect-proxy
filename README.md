@@ -16,22 +16,24 @@ How To Use
 * You can specify proxy method in an environment variable or in a command line option.
 * usage:
 
-		./connect [-dnhstx45] [-p local-port][-R resolve] [-w timeout] 
+		/connect [-dnhstx45] [-p local-port][-R resolve] [-w timeout] 
 		[-S [user@]socks-server[:port]]
 		[-H [user@]proxy-server[:port]]
-    	[-T proxy-server[:port]  [-c telnet-proxy-command]
+		[-T proxy-server[:port]  [-c telnet-proxy-command]
 		[-X [user@]proxy-server[:port]]
 		[--help]
 		[--socks-server          [user@]socks-server[:port]]
 		[--http-proxy            [user@]proxy-server[:port]]
 		[--telnet-proxy          proxy-server[:port]
 		[--https-proxy           [user@]proxy-server[:port]]
+		[--https-proxy-ca        PEM format file of CA's]
+		[--https-proxy-ca-path   PEM format directory of CA's]
 		[--https-proxy-certname  name]
 		[--https-user-cert       certfile.pem]
 		[--https-user-key        keyfile.pem]
 		[--no-check-certificate]
 		host port
-	
+    
 * "host" and "port" is for the target hostname and port-number to connect to.
 * The '-H' or '--http-proxy' option specifies a hostname and port number of the http proxy server to 
   relay. If port is omitted, 80 is used. You can specify this value in the environment variable 
@@ -57,7 +59,7 @@ How To Use
 * The '-d' option is used for debug. If you fail to connect, use this and check request to and 
   response from server.
  
- You can omit the "port" argument when program name is special format containing port number 
+You can omit the "port" argument when program name is special format containing port number 
 itself. For example,
  
 		$ ln -s connect connect-25
@@ -69,7 +71,7 @@ server on 'firewall' host.
 		$ connect -S firewall  host 25
   or
   
-  		$ SOCKS5_SERVER=firewall; export SOCKS5_SERVER
+		$ SOCKS5_SERVER=firewall; export SOCKS5_SERVER
 		$ connect -s host 25
 * For a HTTP-PROXY connection:
 
