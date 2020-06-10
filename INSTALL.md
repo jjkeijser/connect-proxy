@@ -1,5 +1,5 @@
 # connect-proxy
-Make socket connection using SOCKS4/5, telnet HTTP or HTTPS tunnel.
+Make socket connection using SOCKS4/5, telnet, HTTP or HTTPS tunnel.
 
 *************************************************************************
 
@@ -7,6 +7,10 @@ QUICK START:
 
   Unix:
 		gcc -o connect connect.c -lssl -lcrypto
+
+  Mingw:
+		x86_64-w64-mingw32-gcc -o connect.c connect.c -I../mingw/openssl-1.1.1g/include
+				 -L../mingw/openssl-1.1.1g -lssl -lcrypto -lws2_32
 
 *************************************************************************
 

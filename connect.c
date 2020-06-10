@@ -246,10 +246,6 @@
 #endif /* not ( not _WIN32 && not __CYGWIN32__) */
 #endif /* !_WIN32 */
 
-#ifdef _WIN32
-#define ECONNRESET WSAECONNRESET
-#endif /* _WI32 */
-
 #include <openssl/ssl.h>
 #include <openssl/x509.h>
 #include <openssl/x509v3.h>
@@ -307,7 +303,7 @@ static char *usage2 =
 /* name of this program */
 char *progname = NULL;
 static char *progdesc = "connect --- simple relaying command via proxy.";
-static char *revstr = "2.01";
+static char *revstr = "2.02";
 
 /* set of character for strspn() */
 const char *digits    = "0123456789";
@@ -2625,7 +2621,7 @@ sslread(char *buf, size_t size)
 		return 0;                               /* no error */
 	size--;
 
-	bzero(buf, size);
+	memset(buf, 0, size);
 
     debug("sslread: bytes waiting: %d\n", SSL_pending(ssl));
 	ret = SSL_read(ssl, buf, size);
@@ -2970,14 +2966,14 @@ begin_https_relay( SOCKET s )
 		return START_ERROR;
 
 	/* get response */
-	bzero(buf, sizeof(buf));
-	bzero(sslbuf, sizeof(sslbuf));
+	memset(buf, 0, sizeof(buf));
+	memset(sslbuf, 0, sizeof(sslbuf));
 	if (ssl_line_input(buf, sizeof(buf)) < 0)
 	{
 		debug("failed to read https response, retry.\n");
 
 		/* retry (needed to work around certificate based auth) */
-		bzero(sslbuf, sizeof(sslbuf));
+		memset(sslbuf, 0, sizeof(sslbuf));
 		if (ssl_line_input(buf, sizeof(buf)) < 0)
 			debug("failed to read https response.\n");
 	}
