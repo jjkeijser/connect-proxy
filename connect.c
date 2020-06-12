@@ -303,7 +303,7 @@ static char *usage2 =
 /* name of this program */
 char *progname = NULL;
 static char *progdesc = "connect --- simple relaying command via proxy.";
-static char *revstr = "2.02";
+static char *revstr = "2.03";
 
 /* set of character for strspn() */
 const char *digits    = "0123456789";
@@ -521,7 +521,8 @@ int proxy_auth_type = PROXY_AUTH_NONE;
 
 void cleanup_and_exit( int exit_code )
 {
-	/* clean up to make valgrind happy */
+#ifdef _VALGRIND
+	/* clean up to make valgrind happy; fails under mingw! */
 	if ( relay_host )
 		free( relay_host );
 	if ( relay_user )
@@ -537,6 +538,7 @@ void cleanup_and_exit( int exit_code )
 		SSL_COMP_free_compression_methods();
 		CRYPTO_cleanup_all_ex_data();
 	}
+#endif
 
 #ifdef _WIN32
 	WSACleanup();
@@ -727,7 +729,7 @@ getusername(void)
 	struct passwd *pw = getpwuid(getuid());
 	if ( pw == NULL )
 		fatal("getpwuid() failed for uid: %d\n", getuid());
-	return pw->pw_name;
+	return strdup(pw->pw_name);
 #endif /* not _WIN32 */
 }
 
@@ -1950,8 +1952,15 @@ quit:
 }
 
 #ifndef _WIN32
-/* Time-out feature is not allowed for Win32 native compilers. */
-/* MSVC and Borland C cannot but Cygwin and UNIXes can. */
+/* Time-out nor hangup feature is allowed under Windows. */
+
+/* hangup signal hander */
+static void
+sig_hangup(const int signum)
+{
+	debug( "hangup\n" );
+	cleanup_and_exit(0);
+}
 
 /* timeout signal hander */
 static void
@@ -1960,7 +1969,7 @@ sig_timeout(const int signum)
 	signal( SIGALRM, SIG_IGN );
 	alarm( 0 );
 	error( "timed out\n" );
-	exit(1);
+	cleanup_and_exit(1);
 }
 
 /* set timeout param = seconds, 0 clears */
@@ -3493,7 +3502,11 @@ accept_connection (u_short port)
 	int connection;
 	struct sockaddr_in name;
 	struct sockaddr client;
+#ifdef _WIN32
+	int socklen;
+#else
 	unsigned int socklen;
+#endif
 	fd_set ifds;
 	int nfds;
 	int sockopt;
@@ -3537,7 +3550,7 @@ accept_connection (u_short port)
 		n = select (nfds, &ifds, NULL, NULL, ptmo);
 		if (n == -1) {
 		    fatal ("select() failed, %d\n", socket_errno());
-		    exit (1);
+		    cleanup_and_exit (1);
 		}
 #ifdef _WIN32
 		if (0 < stdindatalen()) {
@@ -3549,7 +3562,7 @@ accept_connection (u_short port)
 		    if (FD_ISSET(0, &ifds) && (getchar() <= 0)) {
 		        /* EOF */
 		        debug ("Give-up waiting port because stdin is closed.");
-		        exit(0);
+		        cleanup_and_exit(0);
 		    }
 		    if (FD_ISSET(sock, &ifds))
 		        break;                          /* socket is stimulated */
@@ -3599,6 +3612,7 @@ retry:
 #ifndef _WIN32
 	if (0 < connect_timeout)
 		set_timeout (connect_timeout);
+	 signal(SIGHUP, sig_hangup);
 #endif /* not _WIN32 */
 
 	if (check_direct(dest_host))

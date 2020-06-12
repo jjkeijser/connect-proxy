@@ -41,3 +41,13 @@ You can specify an alternative location using
 
 (mind the quotes!)
 
+You can build a \"Valgrind-clean\" version using
+
+		gcc -o connect connect.c -D_VALGRIND -lssl -lcrypto
+
+This version should not report any memory leakage when run against valgrind.
+Note that \"-D_VALGRIND\" should not be used when building the MingW version,
+as it will result in error messages when the connect-proxy program closes.
+
+
+		
