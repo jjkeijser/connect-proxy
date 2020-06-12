@@ -154,10 +154,9 @@ environment, $DISPLAY is not mentioned.
 
 Changelog
 =========
-v2.00	First version to support HTTPS proxies; clean up of the code to make compile cleanly 
-		against gcc9+
-v2.01	Added manpage and made man page and --help message consistent
-v2.02	Fix compilation for MingW and added mingw compilation instructions.
-v2.03	Added SIGHUP signal handler and \"-D_VALGRIND\" flag to allow inclusion/exclusion of
+- v2.00	First version to support HTTPS proxies; clean up of the code to make compile cleanly 
+		against gcc9+.
+- v2.01	Added manpage and made man page and --help message consistent.
+- v2.02	Fix compilation for MingW and added mingw compilation instructions.
+- v2.03	Added SIGHUP signal handler and \"-D_VALGRIND\" flag to allow inclusion/exclusion of
 		a few function calls to make Valgrind happy.
-
